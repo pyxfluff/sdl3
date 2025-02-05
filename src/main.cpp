@@ -1,43 +1,43 @@
+#include <iostream>
+#include <cstdlib>
 #include <SDL3/SDL.h>
 
-int main(int argc, char* argv[]) {
+#define GIM_FORCE_RADIANS
+#define GIM_FORCE_DEPTH_ZERO_TO_ONE
 
-    SDL_Window *window;                    // Declare a pointer
-    bool done = false;
+#include <glm/vec4.hpp>
+#include <glm/mat4x4.hpp>
 
-    SDL_Init(SDL_INIT_VIDEO);              // Initialize SDL3
-
-    // Create an application window with the following settings:
-    window = SDL_CreateWindow(
-        "An SDL3 window",                  // window title
-        640,                               // width, in pixels
-        480,                               // height, in pixels
-        SDL_WINDOW_VULKAN                  // flags - see below
-    );
-
-    // Check that the window was successfully created
-    if (window == NULL) {
-        // In the case that the window could not be made...
-        SDL_LogError(SDL_LOG_CATEGORY_ERROR, "Could not create window: %s\n", SDL_GetError());
-        return 1;
+int main(
+    int argc,
+    char *argv[])
+{
+    if (!SDL_Init(SDL_INIT_VIDEO)) {
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "cant create window", SDL_GetError(), 0);
+        return EXIT_FAILURE;
     }
 
-    while (!done) {
-        SDL_Event event;
+    SDL_Window *Window = SDL_CreateWindow("Vulkan", 1280, 720, SDL_WINDOW_VULKAN);
 
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_EVENT_QUIT) {
-                done = true;
+    if (Window == nullptr) {
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "cant create window", SDL_GetError(), 0);
+        return EXIT_FAILURE;
+    }
+
+    bool Running = true;
+    while (Running) {
+        SDL_Event Event;
+        while (SDL_PollEvent(&Event)) {
+            if (Event.type == SDL_EVENT_QUIT) {
+                Running = false;
             }
         }
-
-        // Do game logic, present a frame, etc.
     }
 
-    // Close and destroy the window
-    SDL_DestroyWindow(window);
+    std::cout << "done";
 
-    // Clean up
+    SDL_DestroyWindow(Window);
     SDL_Quit();
-    return 0;
+
+    return EXIT_SUCCESS;
 }
